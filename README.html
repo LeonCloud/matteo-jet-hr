@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calcolatore Aumento Netto RAL — Jet HR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Wix+Madefor+Display:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --page-bg: rgb(241, 244, 241);
+      --card-bg: #ffffff;
+      --card-radius: 24px;
+      --card-shadow: rgba(193, 193, 134, 0.5) 0px 4px 10px 0px, rgba(17, 21, 10, 0.04) 0px 2px 5px 0px;
+      --color-text: #11150a;
+      --color-label: #3f4340;
+      --color-sublabel: #6b7280;
+      --color-border: #e5e7eb;
+      --color-green: #22c55e;
+      --color-black: #000000;
+      --color-irpef: #f97316;
+      --color-inps: #3b82f6;
+      --color-regionale: #a855f7;
+      --color-bar-bg: #f3f4f6;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: 'Wix Madefor Display', sans-serif;
+      background-color: var(--page-bg);
+      color: var(--color-text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ── */
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .nav-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--color-text);
+    }
+
+    .nav-brand-icon {
+      width: 28px;
+      height: 28px;
+      background: var(--color-black);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-brand-text {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      padding: 64px 24px 48px;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 4vw, 44px);
+      font-weight: 800;
+      line-height: 1.15;
+      color: var(--color-text);
+      max-width: 700px;
+      margin: 0 auto 16px;
+    }
+
+    .hero p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--color-sublabel);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ── MAIN ── */
+    .main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    /* ── CARD ── */
+    .card-tool {
+      background: var(--card-bg);
+      border-radius: var(--card-radius);
+      box-shadow: var(--card-shadow);
+      overflow: hidden;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    /* ── LEFT PANEL ── */
+    .panel-left {
+      padding: 40px 40px;
+      border-right: 1px solid var(--color-border);
+    }
+
+    /* ── RIGHT PANEL ── */
+    .panel-right {
+      padding: 40px 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* ── FIELD ── */
+    .field {
+      margin-bottom: 28px;
+    }
+
+    .field:last-child {
+      margin-bottom: 0;
+    }
+
+    .field-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.35px;
+      text-transform: uppercase;
+      color: var(--color-label);
+      margin-bottom: 10px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap .euro {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-sublabel);
+      border-right: 1px solid var(--color-border);
+      pointer-events: none;
+      user-select: none;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      height: 48px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 12px 16px 12px 58px;
+      font-family: 'Wix Madefor Display', sans-serif;
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--color-text);
+      outline: none;
+      transition: border-color 0.15s;
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+
+    input[type="number"]:focus {
+      border-color: var(--color-text);
+    }
+
+    input[type="number"].field-error {
+      border-color: #ef4444;
+    }
+
+    select {
+      width: 100%;
+      height: 48px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      padding: 12px 42px 12px 16px;
+      font-family: 'Wix Madefor Display', sans-serif;
+      font-size: 15px;
+      font-weight: 500;
+      color: var(--color-text);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      transition: border-color 0.15s;
+    }
+
+    select:focus {
+      border-color: var(--color-text);
+    }
+
+    .error-box {
+      margin-top: 20px;
+      padding: 12px 16px;
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #dc2626;
+      font-weight: 500;
+      display: none;
+    }
+
+    .error-box.visible {
+      display: block;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-label {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.35px;
+      text-transform: uppercase;
+      color: var(--color-label);
+      margin-bottom: 20px;
+    }
+
+    /* ── PLACEHOLDER ── */
+    .result-placeholder {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 20px;
+      gap: 10px;
+    }
+
+    .result-placeholder .ph-icon {
+      font-size: 36px;
+      opacity: 0.25;
+    }
+
+    .result-placeholder p {
+      font-size: 14px;
+      color: var(--color-sublabel);
+      line-height: 1.5;
+      max-width: 220px;
+    }
+
+    /* ── RESULT CONTENT ── */
+    #result-content {
+      display: none;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    #result-content.visible {
+      display: flex;
+    }
+
+    /* Netto rows */
+    .netto-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .netto-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .netto-row:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .netto-row-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--color-label);
+      text-transform: uppercase;
+      letter-spacing: 0.35px;
+    }
+
+    .netto-row-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    /* Delta */
+    .delta-block {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .delta-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .delta-sublabel {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: #16a34a;
+    }
+
+    .delta-value {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--color-green);
+      line-height: 1;
+    }
+
+    /* Breakdown */
+    .breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .bar-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .bar-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--color-text);
+      width: 108px;
+      flex-shrink: 0;
+    }
+
+    .bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--color-bar-bg);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+      width: 0%;
+    }
+
+    .bar-fill.c-green    { background: var(--color-green); }
+    .bar-fill.c-orange   { background: var(--color-irpef); }
+    .bar-fill.c-blue     { background: var(--color-inps); }
+    .bar-fill.c-purple   { background: var(--color-regionale); }
+
+    .bar-amount {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--color-text);
+      text-align: right;
+      width: 90px;
+      flex-shrink: 0;
+    }
+
+    /* Explanation */
+    .explanation {
+      background: #f9fafb;
+      border-radius: 10px;
+      padding: 16px 18px;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--color-text);
+      border-left: 3px solid var(--color-green);
+    }
+
+    .explanation strong {
+      font-weight: 700;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .footer p {
+      font-size: 12px;
+      color: var(--color-sublabel);
+      line-height: 1.6;
+    }
+
+    .footer a {
+      color: var(--color-sublabel);
+      text-decoration: underline;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 720px) {
+      .navbar {
+        padding: 0 20px;
+      }
+
+      .hero {
+        padding: 40px 20px 32px;
+      }
+
+      .main {
+        padding: 0 16px 60px;
+      }
+
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .panel-left {
+        border-right: none;
+        border-bottom: 1px solid var(--color-border);
+        padding: 28px 24px;
+      }
+
+      .panel-right {
+        padding: 28px 24px;
+      }
+
+      .delta-value {
+        font-size: 28px;
+      }
+
+      .netto-row-value {
+        font-size: 17px;
+      }
+
+      .bar-name {
+        width: 90px;
+        font-size: 12px;
+      }
+
+      .bar-amount {
+        width: 80px;
+        font-size: 11px;
+      }
+
+      .footer {
+        padding: 0 16px 48px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="navbar">
+  <a class="nav-brand" href="#">
+    <div class="nav-brand-icon">J</div>
+    <span class="nav-brand-text">Jet HR</span>
+  </a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Calcolatore aumento netto RAL</h1>
+  <p>Scopri quanto aumenta davvero il tuo stipendio netto — e perché non è proporzionale all'aumento lordo.</p>
+</div>
+
+<!-- MAIN CARD -->
+<div class="main">
+  <div class="card-tool">
+    <div class="card-grid">
+
+      <!-- LEFT: INPUTS -->
+      <div class="panel-left">
+
+        <div class="field">
+          <label class="field-label" for="ral-attuale">RAL attuale</label>
+          <div class="input-wrap">
+            <span class="euro">€</span>
+            <input type="number" id="ral-attuale" placeholder="30000" min="0" step="500">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="ral-nuova">RAL nuova</label>
+          <div class="input-wrap">
+            <span class="euro">€</span>
+            <input type="number" id="ral-nuova" placeholder="35000" min="0" step="500">
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="regione">Regione</label>
+          <select id="regione">
+            <option value="1.73">Abruzzo</option>
+            <option value="1.23">Basilicata</option>
+            <option value="2.03">Calabria</option>
+            <option value="2.03">Campania</option>
+            <option value="1.33">Emilia-Romagna</option>
+            <option value="0.70">Friuli-Venezia Giulia</option>
+            <option value="1.73">Lazio</option>
+            <option value="1.23">Liguria</option>
+            <option value="1.23" selected>Lombardia</option>
+            <option value="1.53">Marche</option>
+            <option value="2.03">Molise</option>
+            <option value="1.62">Piemonte</option>
+            <option value="2.03">Puglia</option>
+            <option value="1.23">Sardegna</option>
+            <option value="1.23">Sicilia</option>
+            <option value="1.42">Toscana</option>
+            <option value="1.23">Trentino-Alto Adige</option>
+            <option value="1.62">Umbria</option>
+            <option value="0.70">Valle d'Aosta</option>
+            <option value="1.23">Veneto</option>
+          </select>
+        </div>
+
+        <div class="error-box" id="error-box">
+          Inserisci una RAL nuova superiore a quella attuale.
+        </div>
+
+      </div>
+
+      <!-- RIGHT: RESULTS -->
+      <div class="panel-right">
+
+        <!-- Placeholder -->
+        <div class="result-placeholder" id="result-placeholder">
+          <div class="ph-icon">📊</div>
+          <p>Inserisci la RAL attuale e la RAL nuova per vedere l'impatto sul netto.</p>
+        </div>
+
+        <!-- Results -->
+        <div id="result-content">
+
+          <!-- Netto mensile -->
+          <div>
+            <div class="section-label">Stipendio netto mensile</div>
+            <div class="netto-rows">
+              <div class="netto-row">
+                <span class="netto-row-label">Attuale</span>
+                <span class="netto-row-value" id="val-attuale">—</span>
+              </div>
+              <div class="netto-row">
+                <span class="netto-row-label">Nuovo</span>
+                <span class="netto-row-value" id="val-nuovo">—</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Delta -->
+          <div class="delta-block">
+            <div class="delta-left">
+              <span class="delta-sublabel">Aumento netto mensile</span>
+              <span class="delta-value" id="val-delta">—</span>
+            </div>
+          </div>
+
+          <!-- Breakdown -->
+          <div>
+            <div class="section-label">Dove va l'aumento lordo</div>
+            <div class="breakdown">
+
+              <div class="bar-row">
+                <div class="bar-dot" style="background:var(--color-green)"></div>
+                <span class="bar-name">In tasca</span>
+                <div class="bar-track"><div class="bar-fill c-green" id="bar-netto"></div></div>
+                <span class="bar-amount" id="amt-netto">—</span>
+              </div>
+
+              <div class="bar-row">
+                <div class="bar-dot" style="background:var(--color-irpef)"></div>
+                <span class="bar-name">IRPEF</span>
+                <div class="bar-track"><div class="bar-fill c-orange" id="bar-irpef"></div></div>
+                <span class="bar-amount" id="amt-irpef">—</span>
+              </div>
+
+              <div class="bar-row">
+                <div class="bar-dot" style="background:var(--color-inps)"></div>
+                <span class="bar-name">INPS</span>
+                <div class="bar-track"><div class="bar-fill c-blue" id="bar-inps"></div></div>
+                <span class="bar-amount" id="amt-inps">—</span>
+              </div>
+
+              <div class="bar-row">
+                <div class="bar-dot" style="background:var(--color-regionale)"></div>
+                <span class="bar-name">Add. regionale</span>
+                <div class="bar-track"><div class="bar-fill c-purple" id="bar-regionale"></div></div>
+                <span class="bar-amount" id="amt-regionale">—</span>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Plain language explanation -->
+          <div class="explanation" id="explanation"></div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <p>Calcolo basato su IRPEF 2026. Valori indicativi, escluse addizionali comunali e tredicesima.</p>
+  <p>Costruito da Matteo Bray — <a href="mailto:matteo.bray@gmail.com">matteo.bray@gmail.com</a></p>
+</footer>
+
+<script>
+  // ── CONSTANTS ──
+  const INPS_RATE = 0.0919;
+  const INPS_MAX  = 119650;
+
+  // ── TAX LOGIC ──
+  function inps(ral) {
+    return Math.min(ral, INPS_MAX) * INPS_RATE;
+  }
+
+  function irpefLorda(imp) {
+    if (imp <= 0)      return 0;
+    if (imp <= 28000)  return imp * 0.23;
+    if (imp <= 50000)  return 28000 * 0.23 + (imp - 28000) * 0.35;
+    return 28000 * 0.23 + 22000 * 0.35 + (imp - 50000) * 0.43;
+  }
+
+  function detrazione(imp) {
+    if (imp <= 0)      return 0;
+    if (imp <= 15000)  return 1955;
+    if (imp <= 28000)  return 1910 + (28000 - imp) * (1190 / 13000);
+    if (imp <= 50000)  return 1910 * (50000 - imp) / 22000;
+    return 0;
+  }
+
+  function calcola(ral, aliquotaReg) {
+    const c   = inps(ral);
+    const imp = ral - c;
+    const il  = irpefLorda(imp);
+    const d   = detrazione(imp);
+    const irpef = Math.max(0, il - d);
+    const reg   = imp * (aliquotaReg / 100);
+    const annuo = ral - c - irpef - reg;
+    return { inps: c, irpef, regionale: reg, annuo, mensile: annuo / 12 };
+  }
+
+  // ── FORMATTING ──
+  function eur(n, sign) {
+    const val = Math.round(Math.abs(n));
+    const formatted = new Intl.NumberFormat('it-IT').format(val);
+    const prefix = sign && n >= 0 ? '+' : '';
+    return prefix + '€ ' + formatted;
+  }
+
+  function eurAnno(n) {
+    return eur(n, true) + '/anno';
+  }
+
+  // ── DOM ──
+  const inputA   = document.getElementById('ral-attuale');
+  const inputN   = document.getElementById('ral-nuova');
+  const selReg   = document.getElementById('regione');
+  const errBox   = document.getElementById('error-box');
+  const phHolder = document.getElementById('result-placeholder');
+  const resContent = document.getElementById('result-content');
+
+  function setBar(barId, amtId, pct, annualDelta) {
+    document.getElementById(barId).style.width = Math.max(0, pct).toFixed(1) + '%';
+    document.getElementById(amtId).textContent = eurAnno(annualDelta);
+  }
+
+  function showPlaceholder() {
+    phHolder.style.display = '';
+    resContent.classList.remove('visible');
+  }
+
+  function showResults() {
+    phHolder.style.display = 'none';
+    resContent.classList.add('visible');
+  }
+
+  function update() {
+    const ralA = parseFloat(inputA.value);
+    const ralN = parseFloat(inputN.value);
+    const reg  = parseFloat(selReg.value);
+
+    // Reset error
+    inputN.classList.remove('field-error');
+    errBox.classList.remove('visible');
+
+    // Wait for both inputs
+    if (!inputA.value || !inputN.value || isNaN(ralA) || isNaN(ralN)) {
+      showPlaceholder();
+      return;
+    }
+
+    // Validate direction
+    if (ralN <= ralA) {
+      inputN.classList.add('field-error');
+      errBox.classList.add('visible');
+      showPlaceholder();
+      return;
+    }
+
+    const a = calcola(ralA, reg);
+    const n = calcola(ralN, reg);
+
+    const deltaRAL      = ralN - ralA;
+    const deltaInps     = n.inps      - a.inps;
+    const deltaIrpef    = n.irpef     - a.irpef;
+    const deltaReg      = n.regionale - a.regionale;
+    const deltaNetto    = n.annuo     - a.annuo;
+    const deltaMensile  = deltaNetto  / 12;
+
+    // Update netto rows
+    document.getElementById('val-attuale').textContent = eur(a.mensile) + '/mese';
+    document.getElementById('val-nuovo').textContent   = eur(n.mensile) + '/mese';
+    document.getElementById('val-delta').textContent   = eur(deltaMensile, true) + '/mese';
+
+    // Update bars
+    const total = deltaRAL;
+    setBar('bar-netto',     'amt-netto',     (deltaNetto / total) * 100, deltaNetto);
+    setBar('bar-irpef',     'amt-irpef',     (deltaIrpef / total) * 100, deltaIrpef);
+    setBar('bar-inps',      'amt-inps',      (deltaInps  / total) * 100, deltaInps);
+    setBar('bar-regionale', 'amt-regionale', (deltaReg   / total) * 100, deltaReg);
+
+    // Plain language
+    const regName = selReg.options[selReg.selectedIndex].text;
+    const expl = `Dei ${eur(deltaRAL)} di aumento lordo, ${eur(deltaIrpef)} vanno all'IRPEF, `
+               + `${eur(deltaInps)} all'INPS e ${eur(deltaReg)} all'addizionale regionale (${regName}). `
+               + `Ti restano <strong>${eur(deltaNetto)} netti all'anno</strong>, `
+               + `cioè <strong>${eur(deltaMensile, true)} al mese</strong>.`;
+    document.getElementById('explanation').innerHTML = expl;
+
+    showResults();
+  }
+
+  inputA.addEventListener('input', update);
+  inputN.addEventListener('input', update);
+  selReg.addEventListener('change', update);
+</script>
+
+</body>
+</html>
